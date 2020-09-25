@@ -1,0 +1,31 @@
+{
+  "name": "aruba-airwave",
+  "version": "1.0.0",
+  "description": "Superagent utilities for interacting with the Aruba AirWave REST API",
+  "main": "lib",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashersaupingomez/aruba-airwave.git"
+  },
+  "author": "Asher Gomez <ashersaupingomez@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ashersaupingomez/aruba-airwave/issues"
+  },
+  "homepage": "https://github.com/ashersaupingomez/aruba-airwave#readme",
+  "dependencies": {
+    "superagent": "^6.1.0",
+    "superagent-prefix": "0.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.9.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0"
+  }
+}
