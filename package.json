@@ -22,6 +22,7 @@
   "homepage": "https://github.com/ashersaupingomez/aruba-airwave#readme",
   "dependencies": {
     "baretest": "^2.0.0",
+    "fast-xml-parser": "^3.17.4",
     "superagent": "^6.1.0",
     "superagent-prefix": "0.0.2"
   },
