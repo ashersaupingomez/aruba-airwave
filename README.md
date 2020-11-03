@@ -34,15 +34,18 @@ $ ARUBA_AIRWAVE_HOST=10.12.13.14 npm test
 -   [createClient](#createclient)
     -   [Parameters](#parameters)
     -   [Examples](#examples)
--   [login](#login)
+-   [getAPList](#getaplist)
     -   [Parameters](#parameters-1)
     -   [Examples](#examples-1)
--   [logout](#logout)
+-   [login](#login)
     -   [Parameters](#parameters-2)
     -   [Examples](#examples-2)
--   [useClient](#useclient)
+-   [logout](#logout)
     -   [Parameters](#parameters-3)
     -   [Examples](#examples-3)
+-   [useClient](#useclient)
+    -   [Parameters](#parameters-4)
+    -   [Examples](#examples-4)
 
 ### createClient
 
@@ -54,15 +57,37 @@ Create a client.
 
 #### Examples
 
+Using defaults
+
+
 ```javascript
-const { createClient } = require('aruba-airwave');
+const client = createClient();
+```
 
+Using explicit host
+
+
+```javascript
 const client = createClient('10.11.12.13');
-
-...
 ```
 
 Returns **superagent.Agent** 
+
+### getAPList
+
+Get the all devices listed on AirWave
+
+#### Parameters
+
+-   `client` **superagent.Agent** 
+
+#### Examples
+
+```javascript
+const devices = await getAPList(client);
+```
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>>** 
 
 ### login
 
@@ -76,17 +101,21 @@ Login a client.
 
 #### Examples
 
+Using defaults
+
+
 ```javascript
-const { createClient, login } = require('aruba-airwave');
-
-const client = createClient('10.11.12.13');
-
-await login(client);
-
-...
+const response = await login(client);
 ```
 
-Returns **superagent.Response** 
+Using explicit parameters
+
+
+```javascript
+const response = await login(client, 'rick', 'wubba lubba dub-dub');
+```
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;superagent.Response>** Login response from AirWave REST API
 
 ### logout
 
@@ -99,43 +128,48 @@ Logout a client.
 #### Examples
 
 ```javascript
-const { createClient, login, logout } = require('aruba-airwave');
-
-const client = createClient('10.11.12.13');
-
-await login(client);
-
-...
-
-await logout(client);
+const response = await logout(client);
 ```
 
-Returns **superagent.Response** 
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;superagent.Response>** 
 
 ### useClient
 
-Login a client, execute a function on the client, then logout the client.
+Login, execute a function, then logout.
+This is a convenient method, as apposed to using `login` & `logout` functions.
 
 #### Parameters
 
 -   `client` **superagent.Agent** 
--   `fn` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+-   `fn` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** Function that uses `client` as its only parameter
 -   `username` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 -   `password` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 
 #### Examples
 
+Using `login` & `logout` functions
+
+
 ```javascript
-const { createClient, useClient } = require('aruba-airwave');
+await login(client);
 
-function getUserInfo(client) {
-  return client
-    .get('/user_info.xml');
-}
+const devices = await getAPList(client);
 
-useClient(createClient('10.11.12.13'), getUserInfo)
-  .then(console.log)
-  .catch(console.error);
+await logout(client);
 ```
 
-Returns **any** Return value of `fn`
+Using defaults
+
+
+```javascript
+const devices = await useClient(client, getAPList);
+```
+
+Using explicit parameters
+
+
+```javascript
+const devices = await useClient(client, getAPList, 'rick', 'wubba lubba dub-dub');
+```
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;any>** Return value of `fn`
