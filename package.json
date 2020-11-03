@@ -1,6 +1,6 @@
 {
   "name": "aruba-airwave",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Superagent utilities for interacting with the Aruba AirWave REST API",
   "main": "lib",
   "directories": {
@@ -27,6 +27,7 @@
     "superagent-prefix": "0.0.2"
   },
   "devDependencies": {
+    "dotenv": "^8.2.0",
     "eslint": "^7.9.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0"
