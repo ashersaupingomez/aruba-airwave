@@ -1,6 +1,6 @@
 {
   "name": "aruba-airwave",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Superagent utilities for interacting with the Aruba AirWave REST API",
   "main": "lib",
   "directories": {
