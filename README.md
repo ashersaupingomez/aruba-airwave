@@ -6,20 +6,22 @@ Superagent utilities for interacting with the Aruba AirWave REST API
 
 -   Based on [superagent.Agent](https://visionmedia.github.io/superagent/#agents-for-global-state), a simple & robust http client class with in-built cookie handling.
 -   Simple & flexible API with minimal moving parts.
--   Able to work with environment variables.
+-   Able to work with environment variables, by default.
 -   Super-lightweight package.
 
 ## Getting Started
 
 ```javascript
-const { createClient, useClient, getAPList } = require('aruba-airwave');
+const { createClient, useClient } = require('aruba-airwave');
 
-const devices = await useClient(createClient(), getAPList);
+const getUserInfo = require('./getUserInfo');
+
+const userInfo = await useClient(createClient(), getUserInfo);
 ```
 
 ## Testing
 
-Tests are performed using an actual AirWave server. Be sure to include all necessary environment variables.
+Tests are performed on an actual AirWave server whose credentials are defined by environment variables.
 
 ```bash
 $ ARUBA_AIRWAVE_HOST=10.12.13.14 npm test
@@ -34,142 +36,106 @@ $ ARUBA_AIRWAVE_HOST=10.12.13.14 npm test
 -   [createClient](#createclient)
     -   [Parameters](#parameters)
     -   [Examples](#examples)
--   [getAPList](#getaplist)
+-   [loginClient](#loginclient)
     -   [Parameters](#parameters-1)
     -   [Examples](#examples-1)
--   [login](#login)
+-   [logoutClient](#logoutclient)
     -   [Parameters](#parameters-2)
     -   [Examples](#examples-2)
--   [logout](#logout)
+-   [useClient](#useclient)
     -   [Parameters](#parameters-3)
     -   [Examples](#examples-3)
--   [useClient](#useclient)
-    -   [Parameters](#parameters-4)
-    -   [Examples](#examples-4)
 
 ### createClient
 
-Create a client.
-
 #### Parameters
 
--   `host` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** AirWave IP host (optional, default `process.env.ARUBA_AIRWAVE_HOST`)
-
-#### Examples
-
-Using defaults
-
-
-```javascript
-const client = createClient();
-```
-
-Using explicit host
-
-
-```javascript
-const client = createClient('10.11.12.13');
-```
-
-Returns **superagent.Agent** 
-
-### getAPList
-
-Get the all devices listed on AirWave
-
-#### Parameters
-
--   `client` **superagent.Agent** 
+-   `host` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** IP address of AirWave (optional, default `process.env.ARUBA_AIRWAVE_HOST`)
 
 #### Examples
 
 ```javascript
-const devices = await getAPList(client);
+const client = createClient('10.11.12.12');
 ```
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>>** 
+Returns **superagent.agent** AirWave REST API client
 
-### login
+### loginClient
 
-Login a client.
+Note: must be performed before any requests
 
 #### Parameters
 
--   `client` **superagent.Agent** 
--   `username` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**  (optional, default `process.env.ARUBA_AIRWAVE_USERNAME`)
--   `password` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**  (optional, default `process.env.ARUBA_AIRWAVE_PASSWORD`)
-
-#### Examples
-
-Using defaults
-
-
-```javascript
-const response = await login(client);
-```
-
-Using explicit parameters
-
-
-```javascript
-const response = await login(client, 'rick', 'wubba lubba dub-dub');
-```
-
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;superagent.Response>** Login response from AirWave REST API
-
-### logout
-
-Logout a client.
-
-#### Parameters
-
--   `client` **superagent.Agent** 
+-   `client` **superagent.agent** AirWave REST API client
+-   `username` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Username of AirWave user (optional, default `process.env.ARUBA_AIRWAVE_USERNAME`)
+-   `password` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Password of AirWave user (optional, default `process.env.ARUBA_AIRWAVE_PASSWORD`)
 
 #### Examples
 
 ```javascript
-const response = await logout(client);
+await loginClient(client, 'rick', 'wubba lubba dub-dub');
 ```
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;superagent.Response>** 
+Returns **superagent.Request** Login request for AirWave REST API
+
+### logoutClient
+
+Note: must be performed after requests
+
+#### Parameters
+
+-   `client` **superagent.agent** AirWave REST API client
+
+#### Examples
+
+```javascript
+await logoutClient(client);
+```
+
+Returns **superagent.Request** Logout request for the AirWave REST API
 
 ### useClient
 
-Login, execute a function, then logout.
-This is a convenient method, as apposed to using `login` & `logout` functions.
+Login a client, execute a function using the client, then logout the client,
+returning the value of the function.
+
+This is a simpler method than explicitly using `loginClient` & `logoutClient`,
+which is the typical workflow.
 
 #### Parameters
 
--   `client` **superagent.Agent** 
--   `fn` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** Function that uses `client` as its only parameter
--   `username` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
--   `password` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `client` **superagent.agent** AirWave REST API client
+-   `fn` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** Function which only accepts `client` parameter
+-   `username` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Username of AirWave user
+-   `password` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Password of AirWave user
 
 #### Examples
 
-Using `login` & `logout` functions
+Define a function:
 
 
 ```javascript
-await login(client);
-
-const devices = await getAPList(client);
-
-await logout(client);
+function getUserInfo(client) {
+  return client
+    .get('/user_info.xml')
+    .then(({ text }) => text);
+}
 ```
 
-Using defaults
+Pass `client` & the function into `useClient`:
 
 
 ```javascript
-const devices = await useClient(client, getAPList);
+const userInfo = await useClient(client, getUserInfo, 'rick', 'wubba lubba dub-dub');
 ```
 
-Using explicit parameters
+This is equivalent to:
 
 
 ```javascript
-const devices = await useClient(client, getAPList, 'rick', 'wubba lubba dub-dub');
-```
+await loginClient(client, 'rick', 'wubba lubba dub-dub');
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;any>** Return value of `fn`
+const userInfo = await getUserInfo(client);
+
+await logoutClient(client);
+```

@@ -1,11 +1,8 @@
 {
   "name": "aruba-airwave",
-  "version": "1.4.1",
+  "version": "2.0.0",
   "description": "Superagent utilities for interacting with the Aruba AirWave REST API",
   "main": "lib",
-  "directories": {
-    "lib": "lib"
-  },
   "scripts": {
     "docs:build": "documentation readme lib --section=API",
     "test": "node test"
@@ -21,12 +18,11 @@
   },
   "homepage": "https://github.com/ashersaupingomez/aruba-airwave#readme",
   "dependencies": {
-    "baretest": "^2.0.0",
-    "fast-xml-parser": "^3.17.4",
     "superagent": "^6.1.0",
     "superagent-prefix": "0.0.2"
   },
   "devDependencies": {
+    "baretest": "^2.0.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.9.0",
     "eslint-config-airbnb-base": "^14.2.0",

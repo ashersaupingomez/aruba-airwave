@@ -1,15 +1,34 @@
 const baretest = require('baretest');
 const assert = require('assert');
+const { agent, Response } = require('superagent');
 
-const { createClient, useClient, getAPList } = require('./lib');
 const { name } = require('./package');
+const {
+  createClient,
+  loginClient,
+  logoutClient,
+  useClient,
+} = require('./lib');
 
 const test = baretest(name);
 
-test('getAPList works', async () => {
-  const devices = await useClient(createClient(), getAPList);
+function getUserInfo(client) {
+  return client
+    .get('/user_info.xml')
+    .then(({ text }) => text);
+}
 
-  assert(Array.isArray(devices));
-});
+const client = createClient();
+
+test('createClient', () => assert(client instanceof agent));
+
+test('loginClient', () => loginClient(client)
+  .then((response) => assert(response instanceof Response)));
+
+test('logoutClient', () => logoutClient(client)
+  .then((response) => assert(response instanceof Response)));
+
+test('useClient', () => useClient(client, getUserInfo)
+  .then((platformName) => assert(typeof platformName === 'string')));
 
 test.run();
