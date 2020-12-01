@@ -12,19 +12,14 @@ Superagent utilities for interacting with the Aruba AirWave REST API
 ## Getting Started
 
 ```javascript
-const { createClient, useClient } = require('aruba-airwave');
+import { useClient } from 'aruba-airwave';
 
-const getUserInfo = require('./getUserInfo');
+function requestGetUserInfo(client) {
+  return client
+    .get('/user_info.xml');
+}
 
-const userInfo = await useClient(createClient(), getUserInfo);
-```
-
-## Testing
-
-Tests are performed on an actual AirWave server whose credentials are defined by environment variables.
-
-```bash
-$ ARUBA_AIRWAVE_HOST=10.12.13.14 npm test
+const userInfo = await useClient(requestGetUserInfo);
 ```
 
 ## API
@@ -36,106 +31,70 @@ $ ARUBA_AIRWAVE_HOST=10.12.13.14 npm test
 -   [createClient](#createclient)
     -   [Parameters](#parameters)
     -   [Examples](#examples)
--   [loginClient](#loginclient)
+-   [useClient](#useclient)
     -   [Parameters](#parameters-1)
     -   [Examples](#examples-1)
--   [logoutClient](#logoutclient)
-    -   [Parameters](#parameters-2)
-    -   [Examples](#examples-2)
--   [useClient](#useclient)
-    -   [Parameters](#parameters-3)
-    -   [Examples](#examples-3)
 
 ### createClient
 
+Request URLs are prepended with the appropriate URL base,
+so only REST API endpoints are required.
+
 #### Parameters
 
--   `host` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** IP address of AirWave (optional, default `process.env.ARUBA_AIRWAVE_HOST`)
+-   `host` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Aruba AirWave IP address (typically) (optional, default `process.env.ARUBA_AIRWAVE_HOST!`)
 
 #### Examples
 
 ```javascript
-const client = createClient('10.11.12.12');
+const client = createClient();
 ```
 
-Returns **superagent.agent** AirWave REST API client
+If certs hasn't been configured on Aruba AirWave
 
-### loginClient
-
-Note: must be performed before any requests
-
-#### Parameters
-
--   `client` **superagent.agent** AirWave REST API client
--   `username` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Username of AirWave user (optional, default `process.env.ARUBA_AIRWAVE_USERNAME`)
--   `password` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Password of AirWave user (optional, default `process.env.ARUBA_AIRWAVE_PASSWORD`)
-
-#### Examples
 
 ```javascript
-await loginClient(client, 'rick', 'wubba lubba dub-dub');
+const client = createClient()
+  .disableTLSCerts();
 ```
 
-Returns **superagent.Request** Login request for AirWave REST API
-
-### logoutClient
-
-Note: must be performed after requests
-
-#### Parameters
-
--   `client` **superagent.agent** AirWave REST API client
-
-#### Examples
-
-```javascript
-await logoutClient(client);
-```
-
-Returns **superagent.Request** Logout request for the AirWave REST API
+Returns **any** Aruba AirWave REST API client
 
 ### useClient
 
-Login a client, execute a function using the client, then logout the client,
-returning the value of the function.
-
-This is a simpler method than explicitly using `loginClient` & `logoutClient`,
-which is the typical workflow.
-
 #### Parameters
 
--   `client` **superagent.agent** AirWave REST API client
--   `fn` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** Function which only accepts `client` parameter
--   `username` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Username of AirWave user
--   `password` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Password of AirWave user
+-   `fn` **function (client: any): any** Function whose only parameter is `client`
+-   `client` **any** Aruba AirWave REST API client (optional, default `createClient()`)
+-   `username` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Aruba AirWave username (optional, default `process.env.ARUBA_AIRWAVE_USERNAME!`)
+-   `password` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Aruba AirWave password (optional, default `process.env.ARUBA_AIRWAVE_PASSWORD!`)
 
 #### Examples
 
-Define a function:
+First, define a function which accepts & uses the `client` paramter
 
 
 ```javascript
-function getUserInfo(client) {
+function requestGetUserInfo(client) {
   return client
-    .get('/user_info.xml')
-    .then(({ text }) => text);
+    .get('/user_info.xml');
 }
 ```
 
-Pass `client` & the function into `useClient`:
+Then, use the `useClient` function which returns the resolved value of `fn`
 
 
 ```javascript
-const userInfo = await useClient(client, getUserInfo, 'rick', 'wubba lubba dub-dub');
+const response = await useClient(requestGetUserInfo);
 ```
 
-This is equivalent to:
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;any>** Promise that resolves to the return value of `fn`
 
+## Testing
 
-```javascript
-await loginClient(client, 'rick', 'wubba lubba dub-dub');
+Tests are performed on an actual Aruba AirWave server whose credentials are defined by environment variables.
+These can be fed either via the command line or a `.env` file at the root of this package.
 
-const userInfo = await getUserInfo(client);
-
-await logoutClient(client);
+```bash
+$ npm test
 ```
