@@ -1,8 +1,9 @@
 {
   "name": "aruba-airwave",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Superagent utilities for interacting with the Aruba AirWave REST API",
-  "main": "lib",
+  "main": "dist/cjs",
+  "module": "dist/esm",
   "scripts": {
     "clean": "rm -rf dist",
     "build:docs": "documentation readme src --section=API --parse-extension=ts",

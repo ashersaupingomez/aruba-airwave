@@ -8,3 +8,6 @@
 - Changed: swapped `fn` & `client` parameter orders in `useClient` (breaking change)
 - Removed: `loginClient` & `logoutClient` documentation, as they're rarely used
 - Removed: `superagent-prefix` package
+
+## 3.0.1
+- Fixed: cjs & esm pointers
