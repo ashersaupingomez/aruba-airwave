@@ -64,7 +64,7 @@ Returns **any** Aruba AirWave REST API client
 
 #### Parameters
 
--   `fn` **function (client: any): any** Function whose only parameter is `client`
+-   `fn` **function (client: any): [Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;T>** Function whose only parameter is `client`
 -   `client` **any** Aruba AirWave REST API client (optional, default `createClient()`)
 -   `username` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Aruba AirWave username (optional, default `process.env.ARUBA_AIRWAVE_USERNAME!`)
 -   `password` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Aruba AirWave password (optional, default `process.env.ARUBA_AIRWAVE_PASSWORD!`)
@@ -88,7 +88,7 @@ Then, use the `useClient` function which returns the resolved value of `fn`
 const response = await useClient(requestGetUserInfo);
 ```
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;any>** Promise that resolves to the return value of `fn`
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;T>** Promise that resolves to the return value of `fn`
 
 ## Testing
 
